@@ -20,7 +20,7 @@ bool CXBOXController::IsConnected()
   return (Result == ERROR_SUCCESS);
 }
 
-void CXBOXController::Vibrate(int leftVal, int rightVal)
+void CXBOXController::Vibrate(uint16_t leftVal, uint16_t rightVal)
 {
   // Create a Vibraton State
   XINPUT_VIBRATION Vibration;

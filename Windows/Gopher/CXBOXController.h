@@ -2,6 +2,7 @@
 
 #include <windows.h>
 #include <xinput.h>
+#include <stdint.h>
 
 class CXBOXController
 {
@@ -12,5 +13,5 @@ public:
   CXBOXController(int playerNumber);
   XINPUT_STATE GetState();
   bool IsConnected();
-  void Vibrate(int leftVal, int rightVal);
+  void Vibrate(uint16_t leftVal, uint16_t rightVal);
 };

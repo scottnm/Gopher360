@@ -98,11 +98,11 @@ public:
 
   void loop();
 
-  void pulseVibrate(const int duration, const int l, const int r) const;
+  void pulseVibrate(const int duration, const uint16_t l, const uint16_t r) const;
 
   void toggleWindowVisibility();
 
-  void setWindowVisibility(const bool& hidden) const;
+  static void setWindowVisibility(const bool& hidden);
 
   float getDelta(short tx);
 

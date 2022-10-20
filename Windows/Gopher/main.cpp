@@ -53,7 +53,7 @@ int main()
   printf("All you need is an Xbox360/Xbone controller (wired or wireless adapter), or DualShock (with InputMapper 1.5+)\n");
   printf("Gopher will autofind the xinput device and begin reading input - if nothing happens, verify connectivity.\n");
   printf("See the GitHub repository at bit.ly/1syAhMT for more info. Twitter contact: TylerAt60FPS\n\n-------------------------\n\n");
-  
+
   SetConsoleTextAttribute(hConsole, 23);
   printf("Gopher is free (as in freedom) software: you can redistribute it and/or modify\nit under the terms of the GNU General Public License as published by\nthe Free Software Foundation, either version 3 of the License, or\n(at your option) any later version.\n");
   printf("\nYou should have received a copy of the GNU General Public License\nalong with this program. If not, see http://www.gnu.org/licenses/.");
@@ -108,8 +108,8 @@ BOOL isRunningAsAdministrator()
 bool ChangeVolume(double nVolume, bool bScalar) //o b
 {
   HRESULT hr = NULL;
-  bool decibels = false;
-  bool scalar = false;
+  // bool decibels = false;
+  // bool scalar = false;
   double newVolume = nVolume;
 
   CoInitialize(NULL);

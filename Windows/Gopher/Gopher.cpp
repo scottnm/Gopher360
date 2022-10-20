@@ -269,8 +269,8 @@ void Gopher::loop()
   setXboxClickState(CONFIG_SPEED_CHANGE);
   if (_xboxClickIsDown[CONFIG_SPEED_CHANGE])
   {
-    const int CHANGE_SPEED_VIBRATION_INTENSITY = 65000;   // Speed of the vibration motors when changing cursor speed.
-    const int CHANGE_SPEED_VIBRATION_DURATION = 450;      // Duration of the cursor speed change vibration in milliseconds.
+    const uint16_t CHANGE_SPEED_VIBRATION_INTENSITY = 65000;   // Speed of the vibration motors when changing cursor speed.
+    const uint16_t CHANGE_SPEED_VIBRATION_DURATION = 450;      // Duration of the cursor speed change vibration in milliseconds.
 
     speed_idx++;
     if (speed_idx >= speeds.size())
@@ -350,7 +350,7 @@ void Gopher::loop()
 //   duration   The length of time in milliseconds to vibrate for
 //   l          The speed (intensity) of the left vibration motor
 //   r          The speed (intensity) of the right vibration motor
-void Gopher::pulseVibrate(const int duration, const int l, const int r) const
+void Gopher::pulseVibrate(const int duration, const uint16_t l, const uint16_t r) const
 {
   if(!_vibrationDisabled)
   {
@@ -368,7 +368,7 @@ void Gopher::handleDisableButton()
   if (_xboxClickIsDown[CONFIG_DISABLE])
   {
     int duration = 0;   // milliseconds
-    int intensity = 0;  // vibration intensity
+    uint16_t intensity = 0;  // vibration intensity
 
     _disabled = !_disabled;
 
@@ -443,10 +443,10 @@ void Gopher::toggleWindowVisibility()
 //
 // Params:
 //   hidden   Hides the window when true
-void Gopher::setWindowVisibility(const bool &hidden) const
+void Gopher::setWindowVisibility(const bool& hidden)
 {
   HWND hWnd = GetConsoleWindow();
-  ShowWindow(hWnd, _hidden ? SW_HIDE : SW_SHOW);
+  ShowWindow(hWnd, hidden ? SW_HIDE : SW_SHOW);
 }
 
 template <typename T>
