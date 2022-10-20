@@ -1,6 +1,16 @@
 #include "Gopher.h"
 #include "ConfigFile.h"
 
+static uint16_t LoadU16FromConfig(const ConfigFile& cfg, const char* key)
+{
+    uint32_t valueU32 = stoul(cfg.getValueOfKey<std::string>(key), 0, 0);
+    if (valueU32 >= UINT16_MAX)
+    {
+        throw std::out_of_range("config value could not fit in a 16-bit WORD");
+    }
+    return static_cast<uint16_t>(valueU32);
+}
+
 // Description:
 //   Send a keyboard input to the system based on the key value
 //     and its event type.
@@ -76,12 +86,12 @@ Gopher::Gopher(CXBOXController * controller)
 }
 
 // Description:
-//   Reads and parses the configuration file, assigning values to the 
+//   Reads and parses the configuration file, assigning values to the
 //     configuration variables.
 void Gopher::loadConfigFile()
 {
   ConfigFile cfg("config.ini");
-  
+
   //--------------------------------
   // Configuration bindings
   //--------------------------------
@@ -97,22 +107,22 @@ void Gopher::loadConfigFile()
   //--------------------------------
   // Controller bindings
   //--------------------------------
-  GAMEPAD_DPAD_UP = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_DPAD_UP").c_str(), 0, 0);
-  GAMEPAD_DPAD_DOWN = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_DPAD_DOWN").c_str(), 0, 0);
-  GAMEPAD_DPAD_LEFT = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_DPAD_LEFT").c_str(), 0, 0);
-  GAMEPAD_DPAD_RIGHT = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_DPAD_RIGHT").c_str(), 0, 0);
-  GAMEPAD_START = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_START").c_str(), 0, 0);
-  GAMEPAD_BACK = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_BACK").c_str(), 0, 0);
-  GAMEPAD_LEFT_THUMB = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_LEFT_THUMB").c_str(), 0, 0);
-  GAMEPAD_RIGHT_THUMB = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_RIGHT_THUMB").c_str(), 0, 0);
-  GAMEPAD_LEFT_SHOULDER = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_LEFT_SHOULDER").c_str(), 0, 0);
-  GAMEPAD_RIGHT_SHOULDER = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_RIGHT_SHOULDER").c_str(), 0, 0);
-  GAMEPAD_A = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_A").c_str(), 0, 0);
-  GAMEPAD_B = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_B").c_str(), 0, 0);
-  GAMEPAD_X = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_X").c_str(), 0, 0);
-  GAMEPAD_Y = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_Y").c_str(), 0, 0);
-  GAMEPAD_TRIGGER_LEFT = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_TRIGGER_LEFT").c_str(), 0, 0);
-  GAMEPAD_TRIGGER_RIGHT = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_TRIGGER_RIGHT").c_str(), 0, 0);
+  GAMEPAD_DPAD_UP = LoadU16FromConfig(cfg, "GAMEPAD_DPAD_UP");
+  GAMEPAD_DPAD_DOWN = LoadU16FromConfig(cfg, "GAMEPAD_DPAD_DOWN");
+  GAMEPAD_DPAD_LEFT = LoadU16FromConfig(cfg, "GAMEPAD_DPAD_LEFT");
+  GAMEPAD_DPAD_RIGHT = LoadU16FromConfig(cfg, "GAMEPAD_DPAD_RIGHT");
+  GAMEPAD_START = LoadU16FromConfig(cfg, "GAMEPAD_START");
+  GAMEPAD_BACK = LoadU16FromConfig(cfg, "GAMEPAD_BACK");
+  GAMEPAD_LEFT_THUMB = LoadU16FromConfig(cfg, "GAMEPAD_LEFT_THUMB");
+  GAMEPAD_RIGHT_THUMB = LoadU16FromConfig(cfg, "GAMEPAD_RIGHT_THUMB");
+  GAMEPAD_LEFT_SHOULDER = LoadU16FromConfig(cfg, "GAMEPAD_LEFT_SHOULDER");
+  GAMEPAD_RIGHT_SHOULDER = LoadU16FromConfig(cfg, "GAMEPAD_RIGHT_SHOULDER");
+  GAMEPAD_A = LoadU16FromConfig(cfg, "GAMEPAD_A");
+  GAMEPAD_B = LoadU16FromConfig(cfg, "GAMEPAD_B");
+  GAMEPAD_X = LoadU16FromConfig(cfg, "GAMEPAD_X");
+  GAMEPAD_Y = LoadU16FromConfig(cfg, "GAMEPAD_Y");
+  GAMEPAD_TRIGGER_LEFT = LoadU16FromConfig(cfg, "GAMEPAD_TRIGGER_LEFT");
+  GAMEPAD_TRIGGER_RIGHT = LoadU16FromConfig(cfg, "GAMEPAD_TRIGGER_RIGHT");
 
   //--------------------------------
   // Advanced settings
@@ -122,17 +132,11 @@ void Gopher::loadConfigFile()
   acceleration_factor = strtof(cfg.getValueOfKey<std::string>("ACCELERATION_FACTOR").c_str(), 0);
 
   // Dead zones
-  DEAD_ZONE = strtol(cfg.getValueOfKey<std::string>("DEAD_ZONE").c_str(), 0, 0);
-  if (DEAD_ZONE == 0)
-  {
-    DEAD_ZONE = 6000;
-  }
+  long deadZoneCfgValue = strtol(cfg.getValueOfKey<std::string>("DEAD_ZONE").c_str(), 0, 0);
+  DEAD_ZONE = deadZoneCfgValue == 0 ? 6000.0f : static_cast<float>(deadZoneCfgValue);
 
-  SCROLL_DEAD_ZONE = strtol(cfg.getValueOfKey<std::string>("SCROLL_DEAD_ZONE").c_str(), 0, 0);
-  if (SCROLL_DEAD_ZONE == 0)
-  {
-    SCROLL_DEAD_ZONE = 5000;
-  }
+  long scrollDeadZoneCfgValue = strtol(cfg.getValueOfKey<std::string>("SCROLL_DEAD_ZONE").c_str(), 0, 0);
+  SCROLL_DEAD_ZONE = scrollDeadZoneCfgValue == 0 ? 5000.0f : static_cast<float>(scrollDeadZoneCfgValue);
 
   SCROLL_SPEED = strtof(cfg.getValueOfKey<std::string>("SCROLL_SPEED").c_str(), 0);
   if (SCROLL_SPEED < 0.00001f)
@@ -412,7 +416,7 @@ void Gopher::handleDisableButton()
 }
 
 // Description:
-//   Toggles the vibration support after checking for the diable vibration command. 
+//   Toggles the vibration support after checking for the diable vibration command.
 //   This function will BLOCK to prevent rapidly toggling the vibration.
 void Gopher::handleVibrationButton()
 {
@@ -436,7 +440,7 @@ void Gopher::toggleWindowVisibility()
 
 // Description:
 //   Either hides or shows the window.
-// 
+//
 // Params:
 //   hidden   Hides the window when true
 void Gopher::setWindowVisibility(const bool &hidden) const
@@ -458,7 +462,7 @@ int sgn(T val)
 //   t  Analog thumbstick value to check and convert
 //
 // Returns:
-//   If the value is valid, t will be returned as-is as a float. If the value is 
+//   If the value is valid, t will be returned as-is as a float. If the value is
 //     invalid, 0 will be returned.
 float Gopher::getDelta(short t)
 {
@@ -476,7 +480,7 @@ float Gopher::getDelta(short t)
 //   tValue     The thumbstick value
 //   deadzone   The dead zone to use for this thumbstick
 //   accel      An exponent to use to create an input curve (Optional). 0 to use a linear input
-//   
+//
 // Returns:
 //   Multiplier used to properly scale the given thumbstick value.
 float Gopher::getMult(float lengthsq, float deadzone, float accel = 0.0f)
@@ -522,8 +526,8 @@ void Gopher::handleMouseMovement()
   float dy = 0;
 
   // Handle dead zone
-  float lengthsq = tx * tx + ty * ty;
-  if (lengthsq > DEAD_ZONE * DEAD_ZONE)
+  float lengthsq = static_cast<float>((tx * tx) + (ty * ty));
+  if (lengthsq > (DEAD_ZONE * DEAD_ZONE))
   {
     float mult = speed * getMult(lengthsq, DEAD_ZONE, acceleration_factor);
 
@@ -546,7 +550,7 @@ void Gopher::handleScrolling()
 {
   float tx;
   float ty;
-  
+
   if (SWAP_THUMBSTICKS == 0)
   {
     // Use right stick
@@ -561,12 +565,15 @@ void Gopher::handleScrolling()
   }
 
   // Handle dead zone
-  float magnitude = sqrt(tx * tx + ty * ty);
+  float magnitude = sqrt((tx * tx) + (ty * ty));
 
   if (magnitude > SCROLL_DEAD_ZONE)
   {
-    mouseEvent(MOUSEEVENTF_HWHEEL, tx * getMult(tx * tx, SCROLL_DEAD_ZONE) * SCROLL_SPEED);
-    mouseEvent(MOUSEEVENTF_WHEEL, ty * getMult(ty * ty, SCROLL_DEAD_ZONE) * SCROLL_SPEED);
+    const DWORD mouseHorizontal = static_cast<DWORD>(tx * getMult((tx * tx), SCROLL_DEAD_ZONE) * SCROLL_SPEED);
+    const DWORD mouseVertical = static_cast<DWORD>(ty * getMult((ty * ty), SCROLL_DEAD_ZONE) * SCROLL_SPEED);
+
+    mouseEvent(MOUSEEVENTF_HWHEEL, mouseHorizontal);
+    mouseEvent(MOUSEEVENTF_WHEEL, mouseVertical);
   }
 }
 
@@ -799,7 +806,7 @@ HWND Gopher::getOskWindow()
 //   Removes an entry for a pressed key from the list.
 //
 // Params:
-//   key  The key value to remove from the pressed key list. 
+//   key  The key value to remove from the pressed key list.
 //
 // Returns:
 //   True if the given key was found and removed from the list.
