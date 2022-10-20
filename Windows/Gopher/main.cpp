@@ -73,6 +73,8 @@ int main()
 
   gopher.loadConfigFile();
 
+  fflush(stdout);
+
   // Start the Gopher program loop
   while (true)
   {
