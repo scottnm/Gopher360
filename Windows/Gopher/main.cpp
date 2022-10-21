@@ -40,7 +40,21 @@ BOOL isRunningAsAdministrator(); // Check if administrator, makes on-screen keyb
  *   http://msdn.microsoft.com/en-us/library/windows/desktop/microsoft.directx_sdk.reference.xinput_gamepad%28v=vs.85%29.aspx
  */
 
-int main()
+const char* GetConfigFilePathFromCommandline(int argc, char** argv)
+{
+    for (int i = 0; i < argc; ++i)
+    {
+        if (0 == strcmp(argv[i], "-c") ||
+            0 == strcmp(argv[i], "--config"))
+        {
+            const int configFilePathArgIndex = i + 1;
+            return configFilePathArgIndex < argc ? argv[configFilePathArgIndex] : nullptr;
+        }
+    }
+    return nullptr;
+}
+
+int main(int argc, char** argv)
 {
   CXBOXController controller(1);
   Gopher gopher(&controller);
@@ -71,7 +85,12 @@ int main()
     printf("Tip - Not running as an admin! Windows on-screen keyboard and others won't work without admin rights.\n");
   }
 
-  gopher.loadConfigFile();
+  const char* configFilePath = GetConfigFilePathFromCommandline(argc, argv);
+  if (configFilePath == nullptr)
+  {
+      configFilePath = "config.ini";
+  }
+  gopher.loadConfigFile(configFilePath);
 
   fflush(stdout);
 

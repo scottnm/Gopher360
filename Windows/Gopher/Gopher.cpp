@@ -88,9 +88,9 @@ Gopher::Gopher(CXBOXController * controller)
 // Description:
 //   Reads and parses the configuration file, assigning values to the
 //     configuration variables.
-void Gopher::loadConfigFile()
+void Gopher::loadConfigFile(const char* configFilePath)
 {
-  ConfigFile cfg("config.ini");
+  ConfigFile cfg(configFilePath);
 
   //--------------------------------
   // Configuration bindings

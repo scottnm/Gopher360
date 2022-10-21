@@ -94,7 +94,7 @@ public:
 
   Gopher(CXBOXController* controller);
 
-  void loadConfigFile();
+  void loadConfigFile(const char* configFilePath);
 
   void loop();
 
